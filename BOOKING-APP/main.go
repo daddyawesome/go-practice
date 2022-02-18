@@ -3,14 +3,14 @@ package main
 import (
 	"booking-app/helper"
 	"fmt"
-	"strings"
+	"strconv"
 )
 
 const conferenceTicket int = 50
 
 var conferenceName = "Go Conference"
-var remainingTicket uint = 50
-var bookings []string
+var remainingTickets uint = 50
+var bookings = make([]map[string]string, 0)
 
 func main() {
 
@@ -19,23 +19,21 @@ func main() {
 	for {
 
 		firstName, lastName, email, userTickets := getUserInput()
-		isValidName, isValidEmail, isValidTicketNumber := helper.ValidUserInput(firstName, lastName, email, userTickets, remainingTicket)
+		isValidName, isValidEmail, isValidTicketNumber := helper.ValidUserInput(firstName, lastName, email, userTickets, remainingTickets)
 
 		if isValidName && isValidEmail && isValidTicketNumber {
 
-			remainingTicket = remainingTicket - userTickets
-
-			bookings = append(bookings, firstName+" "+lastName)
+			bookTicket(userTickets, firstName, lastName, email)
 
 			fmt.Printf("Thank You, %v %v for booking %v tickets \n", firstName, lastName, userTickets)
 			fmt.Printf("We will send a confirmation email at this adress %v\n", email)
-			fmt.Printf("%v tickets remaining for %v\n", remainingTicket, conferenceName)
+			fmt.Printf("%v tickets remaining for %v\n", remainingTickets, conferenceName)
 
-			firstNames := getFirstNames(bookings)
+			firstNames := getFirstNames()
 
 			fmt.Printf("The first names of our bookings are: %v\n\n", firstNames)
 
-			if remainingTicket == 0 {
+			if remainingTickets == 0 {
 				// end program
 				fmt.Printf("Our Conference is booked out. Come back next year")
 				break
@@ -60,16 +58,15 @@ func main() {
 
 func greetUsers() {
 	fmt.Printf("Welcome to Daddy Awesome's %v Booking App\n", conferenceName)
-	fmt.Printf("We have a total of %v tickets and %v are still available.\n", conferenceTicket, remainingTicket)
+	fmt.Printf("We have a total of %v tickets and %v are still available.\n", conferenceTicket, remainingTickets)
 	fmt.Printf("Get your ticket here to attend\n\n")
 
 }
 
-func getFirstNames(bookings []string) []string {
+func getFirstNames() []string {
 	firstNames := []string{}
 	for _, booking := range bookings {
-		var names = strings.Fields(booking)
-		firstNames = append(firstNames, names[0])
+		firstNames = append(firstNames, booking["firstName"])
 	}
 	return firstNames
 }
@@ -93,4 +90,22 @@ func getUserInput() (string, string, string, uint) {
 	fmt.Scan(&userTickets)
 
 	return firstName, lastName, email, userTickets
+}
+
+func bookTicket(userTickets uint, firstName string, lastName string, email string) {
+	remainingTickets = remainingTickets - userTickets
+
+	var userData = make(map[string]string)
+
+	userData["firstName"] = firstName
+	userData["lastName"] = lastName
+	userData["email"] = email
+	userData["numberOfTickets"] = strconv.FormatUint(uint64(userTickets), 10)
+
+	bookings = append(bookings, userData)
+
+	fmt.Printf("List of bookings is %v\n", bookings)
+
+	fmt.Printf("Thank you %v %v for booking %v tickets. You will receive a confirmation email at %v\n", firstName, lastName, userTickets, email)
+	fmt.Printf("%v tickets remaining for %v\n", remainingTickets, conferenceName)
 }
