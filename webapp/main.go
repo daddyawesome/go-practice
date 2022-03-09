@@ -6,7 +6,15 @@ import (
 )
 
 func handlerFunc(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "<h1>Welcome To AWESOMENESS!!!!</h1>")
+	switch r.URL.Path {
+	case "/":
+		fmt.Fprint(w, "<h1>Welcome To AWESOMENESS!!!!</h1>")
+	case "/daddy":
+		fmt.Fprint(w, "<h1>I am daddy AWESOME</h1>")
+	default:
+		fmt.Fprint(w, "Error Daw!!!")
+	}
+
 }
 
 func helloWorld(w http.ResponseWriter, r *http.Request) {
