@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 )
 
 func handlerFunc(w http.ResponseWriter, r *http.Request) {
@@ -17,13 +18,15 @@ func handlerFunc(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func helloWorld(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "hello World!!!")
+func timeout(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Timeout Attemp")
+	time.Sleep(2 * time.Second)
+	fmt.Fprint(w, "Did not Time OUt")
 }
 
 func main() {
 	http.HandleFunc("/", handlerFunc)
-	http.HandleFunc("/hello", helloWorld)
+	http.HandleFunc("/timeout", timeout)
 	fmt.Println("Starting the server om : 3000 ...")
 	http.ListenAndServe(":3000", nil)
 }
