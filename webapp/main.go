@@ -6,7 +6,8 @@ import (
 	"time"
 )
 
-func handlerFunc(w http.ResponseWriter, r *http.Request) {
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	switch r.URL.Path {
 	case "/":
 		fmt.Fprint(w, "<h1>Welcome To AWESOMENESS!!!!</h1>")
@@ -18,6 +19,11 @@ func handlerFunc(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func contactHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	fmt.Fprint(w, "<h1>Contact Page</h1><p>to get in touch hmmm<p>")
+}
+
 func timeout(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Timeout Attemp")
 	time.Sleep(2 * time.Second)
@@ -25,8 +31,9 @@ func timeout(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", handlerFunc)
+	http.HandleFunc("/", homeHandler)
+	http.HandleFunc("/contact", contactHandler)
 	http.HandleFunc("/timeout", timeout)
-	fmt.Println("Starting the server om : 3000 ...")
+	fmt.Println("Starting the server on : 3000 ...")
 	http.ListenAndServe(":3000", nil)
 }
